@@ -1,5 +1,4 @@
-import csv
-import json
+
 
 
 def json_to_csv(json_path, csv_path):
@@ -28,24 +27,24 @@ def json_to_csv(json_path, csv_path):
 
 
 
-def csv_to_json(csv_path, json_path, separator=','):
-    try:
-        with open(csv_path, 'r', encoding='utf-8') as csv_file:
-            reader = csv.DictReader(csv_file, delimiter=separator)
-            data = list(reader)
+# def csv_to_json(csv_path, json_path, separator=','):
+#     try:
+#         with open(csv_path, 'r', encoding='utf-8') as csv_file:
+#             reader = csv.DictReader(csv_file, delimiter=separator)
+#             data = list(reader)
 
-        with open(json_path, 'w', encoding='utf-8') as json_file:
-            json.dump(data, json_file, ensure_ascii=False, indent=4)
+#         with open(json_path, 'w', encoding='utf-8') as json_file:
+#             json.dump(data, json_file, ensure_ascii=False, indent=4)
 
-        return 'Fichier JSON créé avec succès.'
-    except FileNotFoundError:
-        return f'Erreur : Fichier introuvable. Vérifiez le chemin du fichier CSV : {csv_path}'
-    except PermissionError:
-        return 'Erreur : Permission refusée. Assurez-vous d’avoir les autorisations nécessaires pour accéder au fichier.'
-    except Exception as e:
-        return f'Une erreur s’est produite : {e}'
-
-
+#         return 'Fichier JSON créé avec succès.'
+#     except FileNotFoundError:
+#         return f'Erreur : Fichier introuvable. Vérifiez le chemin du fichier CSV : {csv_path}'
+#     except PermissionError:
+#         return 'Erreur : Permission refusée. Assurez-vous d’avoir les autorisations nécessaires pour accéder au fichier.'
+#     except Exception as e:
+#         return f'Une erreur s’est produite : {e}'
 
 
-json_to_csv('output.json','------------u372.csv')
+
+
+# json_to_csv('output.json','------------u372.csv')

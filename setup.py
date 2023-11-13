@@ -1,7 +1,4 @@
 from setuptools import setup
-
-
-
 setup(
     name='json2csv',
     version='0.1.0',
