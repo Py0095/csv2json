@@ -1,0 +1,133 @@
+import csv 
+import json
+import os
+
+
+clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
+
+def csv2json(csv_file):
+    json_file=csv_file.split('.')[0]+'.json'
+    with open(csv_file, encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+    with open(json_file, 'w', encoding='utf-8') as f:
+        json.dump(rows, f, ensure_ascii=False, indent=4)
+    return json_file
+
+
+def json2csv(json_file):
+    csv_file=json_file.split('.')[0]+'.csv'
+    with open(json_file, encoding='utf-8') as f:
+        rows = json.load(f)
+    with open(csv_file, 'w', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+        return csv_file
+
+
+def menu():
+    print('[1] csv to json')
+    print('[2] json to csv')
+    print('[3] exit')
+    return input('select:<]... ')
+
+
+def switch_case(menu):
+    if str(menu) == '1':
+        clear()
+        csv_file = input('Please input the path of your csv file: ')
+        json_file =json2csv(menu)
+        print('json file created: ', json_file, '\n')
+        return json_file
+    elif str(menu) == '2':
+        clear()
+        json_file = input('Please input the path json file: ')
+        # csv_file = json2csv(menu)
+        csv_file = json_to_csv(menu)
+
+        print('csv file created: ', csv_file, '\n   ')
+        return csv_file
+    elif str(menu) == '3':
+
+        return "Goodbye!"
+    else:
+        return "Entrer un nombre entre 1 et 3."
+
+
+
+def json_to_csv(json_path, csv_path):
+    try:
+        with open(json_path, 'r') as json_file:
+            data = eval(json_file.read())
+
+        if isinstance(data, list) and all(isinstance(item, dict) for item in data):
+            with open(csv_path, 'w') as csv_file:
+                # Write header
+                header = ','.join(data[0].keys())
+                csv_file.write(f"{header}\n")
+
+                # Write data
+                for row in data:
+                    values = ','.join(str(val) for val in row.values())
+                    csv_file.write(f"{values}\n")
+
+            print(f"JSON to CSV conversion successful. CSV file is at: {csv_path}")
+        else:
+            print("Incorrect JSON format. JSON should be a list of dictionaries.")
+    except FileNotFoundError:
+        print(f"Error: File not found. Check the path of the JSON file: {json_path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+json_to_csv('output1.json', '/Desktop/37iii2.csv')
+
+def csv_to_json(csv_path, json_path, separator=','):
+    try:
+        with open(csv_path, 'r') as csv_file:
+            lignes = csv_file.readlines()
+
+            data = []
+
+            # Utilisation de la première ligne comme en-tête
+            header = lignes[0].strip().split(separator)
+
+            for ligne in lignes[1:]:
+                values = ligne.strip().split(separator)
+                row = dict(zip(header, values))
+
+                # Modify the keys to match the desired format
+                modified_row = {
+                    "type": row["GSM"],
+                    "mcc": row["372"],
+                    "mnc": row["1"],
+                    "lac": row["2000"],
+                    "cid": row["10021"],
+                    "colonne6": row["0"],
+                    "long": row["-72.290725708008"],
+                    "lat": row["18.575820922852"],
+                    "Colonne9": row["1000"],
+                    "Colonne10": row["9"],
+                    "Colonne11": row["1344532581"],
+                    "Colonne12": row["1344532581"],
+                    "Colonne13": row["1344532581"],
+                    "Colonne14": row["0"]
+                }
+
+                data.append(modified_row)
+
+        with open(json_path, 'w') as json_file:
+            json.dump(data, json_file, indent=2)  # Use json.dump to write data in JSON format with indentation
+
+        return 'JSON file created successfully.'
+    except FileNotFoundError:
+        return f'Error: File not found. Check the path of the CSV file: {csv_path}'
+    except PermissionError:
+        return 'Error: Permission denied. Ensure you have the necessary rights to access the file.'
+    except Exception as e:
+        return f'An error occurred: {e}'
+
+# Example function call
+# result = csv_to_json('372.csv', 'output1.json')
+# print(result)
