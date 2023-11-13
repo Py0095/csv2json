@@ -128,6 +128,51 @@ def csv_to_json(csv_path, json_path, separator=','):
     except Exception as e:
         return f'An error occurred: {e}'
 
+def csv_to_json(csv_path, json_path, separator=','):
+    try:
+        with open(csv_path, 'r') as csv_file:
+            lignes = csv_file.readlines()
+
+            data = []
+
+            # Utilisation de la première ligne comme en-tête
+            header = lignes[0].strip().split(separator)
+
+            for ligne in lignes[1:]:
+                values = ligne.strip().split(separator)
+                row = dict(zip(header, values))
+
+                # Modify the keys to match the desired format
+                modified_row = {
+                    "type": row["GSM"],
+                    "mcc": row["372"],
+                    "mnc": row["1"],
+                    "lac": row["2000"],
+                    "cid": row["10021"],
+                    "colonne6": row["0"],
+                    "long": row["-72.290725708008"],
+                    "lat": row["18.575820922852"],
+                    "Colonne9": row["1000"],
+                    "Colonne10": row["9"],
+                    "Colonne11": row["1344532581"],
+                    "Colonne12": row["1344532581"],
+                    "Colonne13": row["1344532581"],
+                    "Colonne14": row["0"]
+                }
+
+                data.append(modified_row)
+
+        with open(json_path, 'w') as json_file:
+            json.dump(data, json_file, indent=2)  # Use json.dump to write data in JSON format with indentation
+
+        return 'JSON file created successfully.'
+    except FileNotFoundError:
+        return f'Error: File not found. Check the path of the CSV file: {csv_path}'
+    except PermissionError:
+        return 'Error: Permission denied. Ensure you have the necessary rights to access the file.'
+    except Exception as e:
+        return f'An error occurred: {e}'
+
 # Example function call
 # result = csv_to_json('372.csv', 'output1.json')
 # print(result)
