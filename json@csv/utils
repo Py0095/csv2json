@@ -5,6 +5,7 @@ import os
 
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
+
 def csv2json(csv_file):
     json_file=csv_file.split('.')[0]+'.json'
     with open(csv_file, encoding='utf-8') as f:
@@ -81,7 +82,7 @@ def json_to_csv(json_path, csv_path):
         print(f"An error occurred: {e}")
 
 
-json_to_csv('output1.json', '/Desktop/37iii2.csv')
+# json_to_csv('output1.json', '338.csv')
 
 def csv_to_json(csv_path, json_path, separator=','):
     try:
@@ -95,27 +96,6 @@ def csv_to_json(csv_path, json_path, separator=','):
 
             for ligne in lignes[1:]:
                 values = ligne.strip().split(separator)
-                row = dict(zip(header, values))
-
-                # Modify the keys to match the desired format
-                modified_row = {
-                    "type": row["GSM"],
-                    "mcc": row["372"],
-                    "mnc": row["1"],
-                    "lac": row["2000"],
-                    "cid": row["10021"],
-                    "colonne6": row["0"],
-                    "long": row["-72.290725708008"],
-                    "lat": row["18.575820922852"],
-                    "Colonne9": row["1000"],
-                    "Colonne10": row["9"],
-                    "Colonne11": row["1344532581"],
-                    "Colonne12": row["1344532581"],
-                    "Colonne13": row["1344532581"],
-                    "Colonne14": row["0"]
-                }
-
-                data.append(modified_row)
 
         with open(json_path, 'w') as json_file:
             json.dump(data, json_file, indent=2)  # Use json.dump to write data in JSON format with indentation
@@ -127,51 +107,24 @@ def csv_to_json(csv_path, json_path, separator=','):
         return 'Error: Permission denied. Ensure you have the necessary rights to access the file.'
     except Exception as e:
         return f'An error occurred: {e}'
-
 def csv_to_json(csv_path, json_path, separator=','):
     try:
-        with open(csv_path, 'r') as csv_file:
-            lignes = csv_file.readlines()
+        with open(csv_path, 'r', encoding='utf-8') as csv_file:
+            reader = csv.DictReader(csv_file, delimiter=separator)
+            data = list(reader)
 
-            data = []
+        with open(json_path, 'w', encoding='utf-8') as json_file:
+            json.dump(data, json_file, ensure_ascii=False, indent=4)
 
-            # Utilisation de la première ligne comme en-tête
-            header = lignes[0].strip().split(separator)
-
-            for ligne in lignes[1:]:
-                values = ligne.strip().split(separator)
-                row = dict(zip(header, values))
-
-                # Modify the keys to match the desired format
-                modified_row = {
-                    "type": row["GSM"],
-                    "mcc": row["372"],
-                    "mnc": row["1"],
-                    "lac": row["2000"],
-                    "cid": row["10021"],
-                    "colonne6": row["0"],
-                    "long": row["-72.290725708008"],
-                    "lat": row["18.575820922852"],
-                    "Colonne9": row["1000"],
-                    "Colonne10": row["9"],
-                    "Colonne11": row["1344532581"],
-                    "Colonne12": row["1344532581"],
-                    "Colonne13": row["1344532581"],
-                    "Colonne14": row["0"]
-                }
-
-                data.append(modified_row)
-
-        with open(json_path, 'w') as json_file:
-            json.dump(data, json_file, indent=2)  # Use json.dump to write data in JSON format with indentation
-
-        return 'JSON file created successfully.'
+        return 'Fichier JSON créé avec succès.'
     except FileNotFoundError:
-        return f'Error: File not found. Check the path of the CSV file: {csv_path}'
+        return f'Erreur : Fichier introuvable. Vérifiez le chemin du fichier CSV : {csv_path}'
     except PermissionError:
-        return 'Error: Permission denied. Ensure you have the necessary rights to access the file.'
+        return 'Erreur : Permission refusée. Assurez-vous d’avoir les autorisations nécessaires pour accéder au fichier.'
     except Exception as e:
-        return f'An error occurred: {e}'
+        return f'Une erreur s’est produite : {e}'
+
+menu()
 
 # Example function call
 # result = csv_to_json('372.csv', 'output1.json')
