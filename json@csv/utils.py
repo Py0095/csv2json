@@ -1,6 +1,5 @@
 
 
-
 def json_to_csv(json_path, csv_path):
     try:
         with open(json_path, 'r') as json_file:
@@ -22,29 +21,56 @@ def json_to_csv(json_path, csv_path):
             print("Incorrect JSON format. JSON should be a list of dictionaries.")
     except FileNotFoundError:
         print(f"Error: File not found. Check the path of the JSON file: {json_path}")
+    except PermissionError:
+        print(f"Error: Permission denied. Close the CSV file: {csv_path}")
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
 
-# def csv_to_json(csv_path, json_path, separator=','):
-#     try:
-#         with open(csv_path, 'r', encoding='utf-8') as csv_file:
-#             reader = csv.DictReader(csv_file, delimiter=separator)
-#             data = list(reader)
+def csv_to_json(csv_path, json_path, separator=','):
+    try:
+        with open(csv_path, 'r') as csv_file:
+            lines = csv_file.readlines()
 
-#         with open(json_path, 'w', encoding='utf-8') as json_file:
-#             json.dump(data, json_file, ensure_ascii=False, indent=4)
+            # Extract header and data
+            header = lines[0].strip().split(separator)
+            data = [line.strip().split(separator) for line in lines[1:]]
 
-#         return 'Fichier JSON créé avec succès.'
-#     except FileNotFoundError:
-#         return f'Erreur : Fichier introuvable. Vérifiez le chemin du fichier CSV : {csv_path}'
-#     except PermissionError:
-#         return 'Erreur : Permission refusée. Assurez-vous d’avoir les autorisations nécessaires pour accéder au fichier.'
-#     except Exception as e:
-#         return f'Une erreur s’est produite : {e}'
+            # Create list of dictionaries
+            json_data = []
+            for row in data:
+                json_row = {}
+                for i, value in enumerate(row):
+                    json_row[header[i]] = value
+                json_data.append(json_row)
 
+            # Write to JSON file manually
+            with open(json_path, 'w') as json_file:
+                json_file.write("[\n")
+                for i, row in enumerate(json_data):
+                    json_file.write("  {\n")
 
+                    for j, (key, value) in enumerate(row.items()):
+                        json_file.write(f'    "{key}": "{value}"')
+                        if j < len(row) - 1:
+                            json_file.write(",\n")
+                        else:
+                            json_file.write("\n")
 
+                    json_file.write("  }")
+                    if i < len(json_data) - 1:
+                        json_file.write(",\n")
+                    else:
+                        json_file.write("\n")
 
-# json_to_csv('output.json','------------u372.csv')
+                json_file.write("]\n")
+
+            print(f"CSV to JSON conversion successful. JSON file is at: {json_path}")
+    except FileNotFoundError:
+        print(f"Error: File not found. Check the path of the CSV file: {csv_path}")
+    except PermissionError:
+        print(f"Error: Permission denied. Close the CSV file: {csv_path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
